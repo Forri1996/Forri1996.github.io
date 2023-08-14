@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+    
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+    
+
+<meta charset="utf-8" >
+
+<title>arts1</title>
+<meta name="keywords" content="arts1, Forri&#39;s Blog">
+<meta name="description" content="⭐️● Algorithm: 每周至少做一个 LeetCode 的算法题
+⭐️● Review: 阅读并点评至少一篇文章
+⭐️● Tips: 学习至少一个技巧
+⭐️● Share: 分享一篇有观点和思考的文章
+算法题123456789101">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="arts1">
+<meta property="og:description" content="⭐️● Algorithm: 每周至少做一个 LeetCode 的算法题
+⭐️● Review: 阅读并点评至少一篇文章
+⭐️● Tips: 学习至少一个技巧
+⭐️● Share: 分享一篇有观点和思考的文章
+算法题123456789101">
+
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://forri1996.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="logo" width="32px" height="32px">
+      </a>
+      <a href="http://forri1996.github.io">
+        <h1 class="site-title">Forri&#39;s Blog</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">arts1</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2023-08-13</span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>⭐️● Algorithm: 每周至少做一个 LeetCode 的算法题</p>
+<p>⭐️● Review: 阅读并点评至少一篇文章</p>
+<p>⭐️● Tips: 学习至少一个技巧</p>
+<p>⭐️● Share: 分享一篇有观点和思考的文章</p>
+<h3 id="算法题"><a href="#算法题" class="headerlink" title="算法题"></a>算法题</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 如果可以使用以下操作从一个字符串得到另一个字符串，则认为两个字符串 接近 ：</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 操作 1：交换任意两个 现有 字符。</span></span><br><span class="line"><span class="comment"> * 例如，abcde -&gt; aecdb</span></span><br><span class="line"><span class="comment"> * 操作 2：将一个 现有 字符的每次出现转换为另一个 现有 字符，并对另一个字符执行相同的操作。</span></span><br><span class="line"><span class="comment"> * 例如，aacabb -&gt; bbcbaa（所有 a 转化为 b ，而所有的 b 转换为 a ）</span></span><br><span class="line"><span class="comment"> * 你可以根据需要对任意一个字符串多次使用这两种操作。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 给你两个字符串，word1 和 word2 。如果 word1 和 word2 接近 ，就返回 true ；否则，返回 false 。</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 解题思路核心在于找到满足的条件，有2:</span></span><br><span class="line"><span class="comment"> * 1、出现的字符数的比例需要一致。</span></span><br><span class="line"><span class="comment"> * 2、字符的种类需要一致</span></span><br><span class="line"><span class="comment"> * 满足这两个条件，则必定可以通过2个操作来达到要求的结果</span></span><br><span class="line"><span class="comment"> * 否则就不行</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">closeStrings</span><span class="params">(String word1, String word2)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (word1.length() != word2.length()) <span class="keyword">return</span>  <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span>[] arr1 = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">26</span>];</span><br><span class="line">        <span class="type">int</span>[] arr2 = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">26</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">char</span> c : word1.toCharArray()) &#123;</span><br><span class="line">            arr1[c - <span class="string">&#x27;a&#x27;</span>]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">char</span> c : word2.toCharArray()) &#123;</span><br><span class="line">            arr2[c - <span class="string">&#x27;a&#x27;</span>]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">26</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr1[i] + arr2[i] == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (arr1[i]==<span class="number">0</span> || arr2[i] == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(arr1);</span><br><span class="line">        Arrays.sort(arr2);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">26</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr1[i] != arr2[i]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="文章点评-观点输出"><a href="#文章点评-观点输出" class="headerlink" title="文章点评&amp;观点输出"></a>文章点评&amp;观点输出</h3><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/53261114/answer/2972862034">为什么很多人宁愿 excel 贼 6，也不愿意去用 python？</a></p>
+<p>习惯的力量。<br>一样东西用久了，想要再换很困难。<br>一样东西已经在这儿了，想把他换掉也需要很大的勇气。</p>
+<p>以我自己为例，编程中用惯了的组件，即使我知道有更方便效率更高的其他组件，也是懒得去研究去做替代。</p>
+<p>更何况，对于用excel的业务人员，本身看编程相关的内容就像看天书，让他换python岂不是比登天还难。</p>
+<p>但是说实话，这样的本性不好。反映出来有几点：一是不愿意接受新事物，对于未知的东西总是恐惧，不愿意尝试。二是浮躁，引入一些新东西，就是对旧东西的破坏。</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>第一次参与这个打卡，但是苦于没有素材，不知道能写什么。甚至这个观点输出，都是临时找的。</p>
+<p>其实平时看的文章，视频非常多，但是没有记录，看了也是相当于白看。</p>
+<p>希望这个一周一次的打卡，可以帮助我做好记录。</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E7%AE%97%E6%B3%95%E9%A2%98"><span class="top-box-text">算法题</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E6%96%87%E7%AB%A0%E7%82%B9%E8%AF%84-%E8%A7%82%E7%82%B9%E8%BE%93%E5%87%BA"><span class="top-box-text">文章点评&amp;观点输出</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#%E7%BB%93%E8%AF%AD"><span class="top-box-text">结语</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+
+
+
+
+
+
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a aria-label="跳转至github" href="https://github.com/Forri1996" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+
+
+      </div>
+    </div>
+    
+<script id="hexo-configurations"> window.theme_config = {"image":{"lazyload_enable":true,"photo_zoom":"simple-lightbox"}}; window.is_post = true; </script>
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+
