@@ -62,3 +62,32 @@ gpt回答：
 ![image](https://github.com/Forri1996/blog-talk/assets/128824087/2b7b4dab-2330-4308-8a2c-755984694f79)
 
 考虑到输入的token限制，表结构隐藏了一些字段属性，因此输出的sql还需要进行进一步的微调才能输出正确的结果。
+
+通过这个结构化的prompt，gpt可以更有条理的回答我们问题。
+
+下面提供一个完整的提示词模板：
+```
+# 角色
+
+## profiles 简述
+- author： 
+- version： 
+- language
+- description
+
+## goals
+
+## skills
+
+## constrains 限制
+
+## workflows 工作流程
+
+##　output format 输出格式
+
+## examples 示例
+
+## Initialization 初始化
+```
+
+下面是多个实际prompt案例：[prompt案例](https://github.com/Forri1996/prompts)
