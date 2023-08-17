@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+    
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+    
+
+<meta charset="utf-8" >
+
+<title>chatgpt 提示词学习</title>
+<meta name="keywords" content="chatgpt 提示词学习, Forri&#39;s Blog">
+<meta name="description" content="结构化的输入。定义清晰的角色，目标是你希望gpt输出的内容。核心是wordflows，表示gpt按照这里的工作流程进行模块化输出，并且能够输出答案生成的逻辑。下面提供一个sql编写的案例
+Role：你是一位数据库专家，帮助用户解答sql编写">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="chatgpt 提示词学习">
+<meta property="og:description" content="结构化的输入。定义清晰的角色，目标是你希望gpt输出的内容。核心是wordflows，表示gpt按照这里的工作流程进行模块化输出，并且能够输出答案生成的逻辑。下面提供一个sql编写的案例
+Role：你是一位数据库专家，帮助用户解答sql编写">
+
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+  <link rel="stylesheet" href="/style/simple-lightbox.min.css"><meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://forri1996.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="logo" width="32px" height="32px">
+      </a>
+      <a href="http://forri1996.github.io">
+        <h1 class="site-title">Forri&#39;s Blog</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">chatgpt 提示词学习</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2023-08-17</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%AD%A6%E4%B9%A0/">
+              提示词学习
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>结构化的输入。<br>定义清晰的角色，目标是你希望gpt输出的内容。<br>核心是wordflows，表示gpt按照这里的工作流程进行模块化输出，并且能够输出答案生成的逻辑。<br>下面提供一个sql编写的案例</p>
+<h2 id="Role："><a href="#Role：" class="headerlink" title="Role："></a>Role：</h2><p>你是一位数据库专家，帮助用户解答sql编写的问题</p>
+<h2 id="Goals："><a href="#Goals：" class="headerlink" title="Goals："></a>Goals：</h2><ol>
+<li>根据输入的表名分析表之间关系</li>
+<li>根据用户的需求输出统计分析的sql语句。统计输出如下字段：租户id，物理池id，物理池下实际的region数量，物理池下有安全组的region的数，物理池下每个region的安全组数量</li>
+</ol>
+<h2 id="Constrains："><a href="#Constrains：" class="headerlink" title="Constrains："></a>Constrains：</h2><ol>
+<li>实现的sql要有注释</li>
+<li>实现的sql要可以执行</li>
+</ol>
+<h2 id="workflows："><a href="#workflows：" class="headerlink" title="workflows："></a>workflows：</h2><ol>
+<li>用文字描述提供的表之间的关系</li>
+<li>用文字描述实现数据统计sql的思路</li>
+<li>实现代码</li>
+</ol>
+<p>下面是表的结构描述<br>现在有三张表，表的字段结构如下ddl所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `os_region` (</span><br><span class="line">  `region_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &#x27;标识&#x27;,</span><br><span class="line">  `phy_res_pool_id` bigint(20) DEFAULT NULL COMMENT &#x27;物理资源池id&#x27;,</span><br><span class="line">  PRIMARY KEY (`region_id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=2214 DEFAULT CHARSET=utf8mb4 COMMENT=&#x27;os region表&#x27;;</span><br><span class="line"></span><br><span class="line">-- cloud_desktop.os_tenant_res_rela definition</span><br><span class="line"></span><br><span class="line">CREATE TABLE `os_tenant_res_rela` (</span><br><span class="line">  `rela_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &#x27;关联标识&#x27;,</span><br><span class="line">  `tenant_id` bigint(20) NOT NULL COMMENT &#x27;租户标识&#x27;,</span><br><span class="line">  `region_id` bigint(20) DEFAULT NULL COMMENT &#x27;关联region_id&#x27;,</span><br><span class="line">  `az_id` bigint(20) DEFAULT NULL COMMENT &#x27;关联az_id&#x27;,</span><br><span class="line">  `phy_res_pool_id` bigint(20) DEFAULT NULL COMMENT &#x27;物理池ID&#x27;</span><br><span class="line">  PRIMARY KEY (`rela_id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=3226328 DEFAULT CHARSET=utf8mb4 COMMENT=&#x27;租户资源关联表（tenant_res_rela）&#x27;;</span><br><span class="line"></span><br><span class="line">-- cloud_desktop.os_security_group definition</span><br><span class="line"></span><br><span class="line">CREATE TABLE `os_security_group` (</span><br><span class="line">  `security_group_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &#x27;安全组标识&#x27;,</span><br><span class="line">  `tenant_id` bigint(20) DEFAULT NULL COMMENT &#x27;租户标识&#x27;,</span><br><span class="line">  `parent_id` bigint(20) DEFAULT NULL,</span><br><span class="line">  `region_id` bigint(20) DEFAULT NULL,</span><br><span class="line">  `phy_res_pool_id` bigint(20) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`security_group_id`),</span><br><span class="line"></span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=1903552 DEFAULT CHARSET=utf8mb4 COMMENT=&#x27;安全组&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>gpt回答：<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://github.com/Forri1996/blog-talk/assets/128824087/2b7b4dab-2330-4308-8a2c-755984694f79"><img   src="/images/loading.svg" data-src="https://github.com/Forri1996/blog-talk/assets/128824087/2b7b4dab-2330-4308-8a2c-755984694f79"  alt="image" lazyload></a></p>
+<p>考虑到输入的token限制，表结构隐藏了一些字段属性，因此输出的sql还需要进行进一步的微调才能输出正确的结果。</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Role%EF%BC%9A"><span class="top-box-text">Role：</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Goals%EF%BC%9A"><span class="top-box-text">Goals：</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Constrains%EF%BC%9A"><span class="top-box-text">Constrains：</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#workflows%EF%BC%9A"><span class="top-box-text">workflows：</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/2023/08/16/openstack-study1/">
+          <h3 class="post-title">
+            下一篇：openstack学习系列1
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+    <div id="gitalk-container"></div>
+
+
+
+    <link rel="stylesheet" href="/style/gitalk.min.css"/>
+    <script src="/js/gitalk.min.js"></script>
+    <script>
+        const config = {"clientId":"ef1dde43d6cdf1cf1134","clientSecret":"8d6c18ab3ab92bc7ba66395f634fa216bfdd2525","repository":"blog-talk","owner":"Forri1996","createIssueManually":true};
+        const gitalk = new Gitalk({
+            clientID: '',
+            clientSecret: '',
+            repo: '',
+            owner: '',
+            admin: [''],
+            id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49),       // Ensure uniqueness and length less than 50
+            distractionFreeMode: false,  // Facebook-like distraction free mode
+            createIssueManually: 
+        });
+
+        gitalk.render('gitalk-container')
+
+    </script>
+
+
+
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a aria-label="跳转至github" href="https://github.com/Forri1996" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+
+
+      </div>
+    </div>
+    
+<script id="hexo-configurations"> window.theme_config = {"image":{"lazyload_enable":true,"photo_zoom":"simple-lightbox"}}; window.is_post = true; </script>
+
+<script src="/js/main.js"></script>
+
+
+
+    <script async src="https://hm.baidu.com/hm.js?ForrisBlog1996"></script>
+
+
+
+
+  <script src="/js/simple-lightbox.min.js"></script><script>document.addEventListener('DOMContentLoaded', function() {new SimpleLightbox('.post-detail .simple-lightbox', {fileExt: false,captionsData:'alt'});});</script></body>
+</html>
+
