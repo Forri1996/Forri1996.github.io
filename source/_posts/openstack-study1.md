@@ -23,4 +23,6 @@ gives administrators control while empowering their users to provision resources
 - Swift： 对象存储服务。
 - Horizon： 提供一个web门户，提供可视化的操作界面。
 
-部署openstack至少需要6核16G以上的虚拟化资源（2个节点），由于公司云电脑不支持二次虚拟化，家里的windows电脑也坏了，mac电脑配置不够。难顶。
+
+创建一个vm的大致流程：
+![image](https://bbs-img.huaweicloud.com/blogs/img/1597721607171021214.png)
