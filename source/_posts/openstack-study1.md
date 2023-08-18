@@ -15,9 +15,6 @@ gives administrators control while empowering their users to provision resources
 
 所以，在openstack众多组件中，最为核心的就是管理这三个资源的组件：计算，存储和网络。
 
-![image](https://github.com/Forri1996/Forri1996.github.io/assets/128824087/488e0cd3-1371-4044-9509-b5cca39a5522)
-
-
 - Nova：管理虚机的生命周期，如开机关机等。是OS最核心的组件。
 - Neutron： 管理VM的网络。
 - Glance： 管理VM的启动镜像。

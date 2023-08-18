@@ -59,7 +59,7 @@ CREATE TABLE `os_security_group` (
 ```
 
 gpt回答：
-![image](https://github.com/Forri1996/blog-talk/assets/128824087/2b7b4dab-2330-4308-8a2c-755984694f79)
+
 
 考虑到输入的token限制，表结构隐藏了一些字段属性，因此输出的sql还需要进行进一步的微调才能输出正确的结果。
 
