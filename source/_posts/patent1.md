@@ -51,3 +51,120 @@ tags: 提示词学习
 怎么说呢，感觉专业性上提了一个level，而且没有过多地被我的提示词所影响，但是也没有完全按照我提示词的要求来（ask question one by one）
 
 但是，无论他输出的结果如何，其文案质量也已经吊打我这个完全没有专利撰写经验的小白了。
+
+下面给出gpt帮我写的专利英文原文：
+
+
+## Patent Technical Disclosure Document
+
+**Title: A Method for Detecting Data Consistency in Heterogeneous Systems**
+
+### 1. Purpose of the Invention
+
+The present invention relates to the field of data consistency detection in heterogeneous systems. It proposes a novel method for automatically detecting data consistency between source and target data within heterogeneous systems. The invention aims to provide a non-invasive and universal solution for ensuring data consistency across different types of systems.
+
+### 2. Technical Solution of the Invention
+
+The disclosed method comprises an additional detection service that facilitates automated data consistency detection in heterogeneous systems. The detection service is configured with the following parameters:
+
+1. Acquisition Methods of Source and Target Data:
+   - Various acquisition methods, such as database queries or REST interface calls.
+   - Acquisition parameters, including database connection information or REST interface addresses.
+   - Acquisition results, such as return values or response bodies.
+
+2. Data Consistency Detection Comparison Rules:
+   - Comparison objects, specifying fields or attributes to be compared in source and target data.
+   - Comparison methods, such as equality, containment, or size comparison.
+   - Comparison results, indicating data consistency or inconsistency.
+
+The method involves the following steps:
+
+1. Configuration: Set acquisition methods for source and target data, along with data consistency detection comparison rules.
+2. Activation: Initiate the detection service to periodically or trigger-basedly obtain source and target data.
+3. Consistency Check: Conduct data consistency checks based on configured comparison rules.
+4. Alerting and Repair: Notify relevant personnel via preset alerting methods if inconsistency is detected. Apply predetermined data repair solutions, such as manual or automatic repair.
+
+### 3. Technical Advantages of the Invention
+
+The present invention offers several technical advantages:
+
+1. Non-Invasiveness: The method ensures data detection capability without invasive interference with the original and target systems.
+2. Universality: The solution's universality allows it to be applied to diverse heterogeneous systems, regardless of their specific characteristics.
+
+### 4. Protected Technical Points
+
+The invention focuses on the following technical points:
+
+1. A method for automated data consistency detection in heterogeneous systems.
+2. Configuration of acquisition methods for source and target data.
+3. Establishment of data consistency detection comparison rules.
+4. Periodic or trigger-based data consistency checks.
+5. Alerting methods for notifying relevant personnel.
+6. Data repair solutions for addressing detected inconsistencies.
+
+### 5. Novelty and Uniqueness
+
+The disclosed method stands out due to its distinctive features:
+
+1. Automation: Unlike existing methods, which often involve manual checks, this method offers automated data consistency detection.
+2. Heterogeneous Systems: The solution is tailored to handle data consistency across various heterogeneous systems.
+3. Universal Applicability: The method's non-invasive nature and universal compatibility make it suitable for any heterogeneous system.
+
+---
+
+中文版：
+
+## 专利技术披露文件
+
+**标题：一种用于检测异构系统中数据一致性的方法**
+
+### 1. 发明的目的
+
+本发明涉及异构系统中的数据一致性检测领域。它提出了一种新颖方法，用于自动检测异构系统中源数据和目标数据之间的数据一致性。本发明旨在为不同类型的系统提供一种非侵入性和通用性的解决方案，以确保数据在各个系统之间的一致性。
+
+### 2. 发明的技术方案
+
+所揭示的方法包括一个附加的检测服务，用于在异构系统中实现自动数据一致性检测。检测服务根据以下参数进行配置：
+
+1. 源数据和目标数据的获取方法：
+   - 各种获取方法，如数据库查询或REST接口调用。
+   - 获取参数，包括数据库连接信息或REST接口地址。
+   - 获取结果，如返回值或响应体。
+
+2. 数据一致性检测比较规则：
+   - 比较对象，指定在源数据和目标数据中要进行比较的字段或属性。
+   - 比较方法，如相等性、包含性或大小比较。
+   - 比较结果，指示数据的一致性或不一致性。
+
+该方法包括以下步骤：
+
+1. 配置：设置源数据和目标数据的获取方法，以及数据一致性检测的比较规则。
+2. 激活：启动检测服务，定期或基于触发进行源数据和目标数据的获取。
+3. 一致性检查：根据配置的比较规则进行数据一致性检查。
+4. 报警和修复：通过预设的报警方法通知相关人员，如果发现不一致性，则应用预定的数据修复方案，如手动或自动修复。
+
+### 3. 发明的技术优势
+
+本发明具有以下几个技术优势：
+
+1. 非侵入性：该方法确保数据检测能力，而不会对原始系统和目标系统造成侵入性干扰。
+2. 通用性：该解决方案的通用性使其适用于不同特征的各种异构系统，而不受其特定特性的限制。
+
+### 4. 受保护的技术要点
+
+本发明专注于以下技术要点：
+
+1. 一种在异构系统中实现自动化数据一致性检测的方法。
+2. 配置源数据和目标数据的获取方法。
+3. 建立数据一致性检测比较规则。
+4. 基于周期性或触发的数据一致性检查。
+5. 通知相关人员的报警方法。
+6. 用于处理检测到的不一致性的数据修复方案。
+
+### 5. 新颖性和独特性
+
+所揭示的方法之所以独特，是因为具备以下显著特点：
+
+1. 自动化：与现有方法不同，该方法提供了自动化的数据一致性检测。
+2. 异构系统：该解决方案专门处理各种异构系统中的数据一致性。
+3. 通用适用性：该方法的非侵入性和通用兼容性使其适用于任何异构系统。
