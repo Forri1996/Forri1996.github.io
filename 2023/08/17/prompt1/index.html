@@ -23,7 +23,7 @@ Role：你是一位数据库专家，帮助用户解答sql编写">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="stylesheet" href="/style/main.css">
 
-  <link rel="stylesheet" href="/style/simple-lightbox.min.css"><meta name="generator" content="Hexo 6.3.0"></head>
+  <meta name="generator" content="Hexo 6.3.0"></head>
   <body>
     <div id="app" class="main">
 
@@ -113,7 +113,7 @@ Role：你是一位数据库专家，帮助用户解答sql编写">
 <p>下面是表的结构描述<br>现在有三张表，表的字段结构如下ddl所示。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `os_region` (</span><br><span class="line">  `region_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &#x27;标识&#x27;,</span><br><span class="line">  `phy_res_pool_id` bigint(20) DEFAULT NULL COMMENT &#x27;物理资源池id&#x27;,</span><br><span class="line">  PRIMARY KEY (`region_id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=2214 DEFAULT CHARSET=utf8mb4 COMMENT=&#x27;os region表&#x27;;</span><br><span class="line"></span><br><span class="line">-- cloud_desktop.os_tenant_res_rela definition</span><br><span class="line"></span><br><span class="line">CREATE TABLE `os_tenant_res_rela` (</span><br><span class="line">  `rela_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &#x27;关联标识&#x27;,</span><br><span class="line">  `tenant_id` bigint(20) NOT NULL COMMENT &#x27;租户标识&#x27;,</span><br><span class="line">  `region_id` bigint(20) DEFAULT NULL COMMENT &#x27;关联region_id&#x27;,</span><br><span class="line">  `az_id` bigint(20) DEFAULT NULL COMMENT &#x27;关联az_id&#x27;,</span><br><span class="line">  `phy_res_pool_id` bigint(20) DEFAULT NULL COMMENT &#x27;物理池ID&#x27;</span><br><span class="line">  PRIMARY KEY (`rela_id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=3226328 DEFAULT CHARSET=utf8mb4 COMMENT=&#x27;租户资源关联表（tenant_res_rela）&#x27;;</span><br><span class="line"></span><br><span class="line">-- cloud_desktop.os_security_group definition</span><br><span class="line"></span><br><span class="line">CREATE TABLE `os_security_group` (</span><br><span class="line">  `security_group_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &#x27;安全组标识&#x27;,</span><br><span class="line">  `tenant_id` bigint(20) DEFAULT NULL COMMENT &#x27;租户标识&#x27;,</span><br><span class="line">  `parent_id` bigint(20) DEFAULT NULL,</span><br><span class="line">  `region_id` bigint(20) DEFAULT NULL,</span><br><span class="line">  `phy_res_pool_id` bigint(20) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`security_group_id`),</span><br><span class="line"></span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=1903552 DEFAULT CHARSET=utf8mb4 COMMENT=&#x27;安全组&#x27;;</span><br></pre></td></tr></table></figure>
 
-<p>gpt回答：<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://github.com/Forri1996/blog-talk/assets/128824087/2b7b4dab-2330-4308-8a2c-755984694f79"><img   src="/images/loading.svg" data-src="https://github.com/Forri1996/blog-talk/assets/128824087/2b7b4dab-2330-4308-8a2c-755984694f79"  alt="image" lazyload></a></p>
+<p>gpt回答：</p>
 <p>考虑到输入的token限制，表结构隐藏了一些字段属性，因此输出的sql还需要进行进一步的微调才能输出正确的结果。</p>
 <p>通过这个结构化的prompt，gpt可以更有条理的回答我们问题。</p>
 <p>下面提供一个完整的提示词模板：</p>
@@ -215,6 +215,6 @@ Role：你是一位数据库专家，帮助用户解答sql编写">
 
 
 
-  <script src="/js/simple-lightbox.min.js"></script><script>document.addEventListener('DOMContentLoaded', function() {new SimpleLightbox('.post-detail .simple-lightbox', {fileExt: false,captionsData:'alt'});});</script></body>
+  </body>
 </html>
 
