@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+    
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+    
+
+<meta charset="utf-8" >
+
+<title>用gpt写专利</title>
+<meta name="keywords" content="用gpt写专利, Forri&#39;s Blog">
+<meta name="description" content="背景最近一周hw导致日常业务开发工作都陷入停滞了，正好公司有专利撰写的指标，所以就尝试用gpt来写了一下。目前只是一个初稿，能否通过公司审核，结果不得而知…
+提示词近期在星球内学习了提示词的撰写方法，相关的经验都在这份文档里了：如何写提示词">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="用gpt写专利">
+<meta property="og:description" content="背景最近一周hw导致日常业务开发工作都陷入停滞了，正好公司有专利撰写的指标，所以就尝试用gpt来写了一下。目前只是一个初稿，能否通过公司审核，结果不得而知…
+提示词近期在星球内学习了提示词的撰写方法，相关的经验都在这份文档里了：如何写提示词">
+
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+  <link rel="stylesheet" href="/style/simple-lightbox.min.css"><meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://forri1996.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="logo" width="32px" height="32px">
+      </a>
+      <a href="http://forri1996.github.io">
+        <h1 class="site-title">Forri&#39;s Blog</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">用gpt写专利</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2023-08-18</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%AD%A6%E4%B9%A0/">
+              提示词学习
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近一周hw导致日常业务开发工作都陷入停滞了，正好公司有专利撰写的指标，所以就尝试用gpt来写了一下。目前只是一个初稿，能否通过公司审核，结果不得而知…</p>
+<h2 id="提示词"><a href="#提示词" class="headerlink" title="提示词"></a>提示词</h2><p>近期在星球内学习了提示词的撰写方法，相关的经验都在这份文档里了：<a target="_blank" rel="noopener" href="https://github.com/Forri1996/prompts">如何写提示词</a></p>
+<p>按照这份经验，我撰写了一下专利的提示词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">## 角色：你是一名专业的技术方案专利撰写专家</span><br><span class="line"></span><br><span class="line">## 简述</span><br><span class="line">- 作者：Forri</span><br><span class="line">- 版本：1.0 </span><br><span class="line">- 语言：中文</span><br><span class="line"></span><br><span class="line">## 目标</span><br><span class="line">- 分析创新想法的技术实施细节</span><br><span class="line">- 将细节转换为专利技术交底书文案并输出</span><br><span class="line"></span><br><span class="line">## 技能</span><br><span class="line">- 掌握专利撰写的方法</span><br><span class="line">- 掌握技术开发领域的方案设计能力</span><br><span class="line"></span><br><span class="line">## workflows 工作流程</span><br><span class="line">- 根据用户提供的专利名称，通过问问题的方式逐步获得该创新想法的技术细节。</span><br><span class="line">- 根据技术细节，完善技术交底书的几个模块，包括发明创造的目的，发明创造的技术方案，发明创造的技术优点，发明创造要保护的技术要点</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Initialization 初始化</span><br><span class="line">作为专利撰写专家，我擅长剖析想法背后的技术方案，并将思路转换成技术交底书的文案内容。我将用清晰和精确的语言与您对话。请告诉我你的创新想法，我将竭诚为你服务。</span><br></pre></td></tr></table></figure>
+<p>我先用bingAI尝试着输出，他按照我的工作流程，问了我一系列的问题。而这些问题都是我在工作流程中已经提到了点，包括发明创造的目的，发明创造的技术方案，发明创造的技术优点，发明创造要保护的技术要点。<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://github.com/Forri1996/blog-talk/assets/128824087/fc91e3d4-ae05-46af-a094-094a2ae830c0"><img   src="/images/loading.svg" data-src="https://github.com/Forri1996/blog-talk/assets/128824087/fc91e3d4-ae05-46af-a094-094a2ae830c0"  alt="image" lazyload></a></p>
+<p>回答完这些问题后，bingAI给了我这样一个结果：<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://github.com/Forri1996/blog-talk/assets/128824087/21d62318-02aa-43b0-bb28-af0494767864"><img   src="/images/loading.svg" data-src="https://github.com/Forri1996/blog-talk/assets/128824087/21d62318-02aa-43b0-bb28-af0494767864"  alt="image" lazyload></a></p>
+<p>从内容上看，基本上就是基于上面他问我的问题，对我的回答进行了一个整理。</p>
+<p>这里我认为有一个可以优化的点，就是AI问的问题不应该是我提供的，而是应该由我来引导AI，让他自己思考，写一个技术交底书应该了解哪些内容，然后向我提问。</p>
+<p>总体而言，这次输出结果并不是很满意。</p>
+<p>后来，考虑到gpt的“母语”是英文，于是我将提示词整体翻译成英文后，甩给chatGPT3.5（没错，就是竞争就是卷），给出了一个不太一样的结果。由于整体篇幅较长，这里直接给出gpt的分享链接（这个功能打满分）：<a target="_blank" rel="noopener" href="https://chat.openai.com/share/6641e548-9100-4e15-bd8c-ab82bdcd8af6">英文版专利撰写</a></p>
+<p>怎么说呢，感觉专业性上提了一个level，而且没有过多地被我的提示词所影响，但是也没有完全按照我提示词的要求来（ask question one by one）</p>
+<p>但是，无论他输出的结果如何，其文案质量也已经吊打我这个完全没有专利撰写经验的小白了。</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E8%83%8C%E6%99%AF"><span class="top-box-text">背景</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="top-box-text">提示词</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/2023/08/17/prompt1/">
+          <h3 class="post-title">
+            下一篇：chatgpt 提示词学习
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+    <div id="gitalk-container"></div>
+
+
+
+    <link rel="stylesheet" href="/style/gitalk.min.css"/>
+    <script src="/js/gitalk.min.js"></script>
+    <script>
+        const config = {"clientId":"ef1dde43d6cdf1cf1134","clientSecret":"8d6c18ab3ab92bc7ba66395f634fa216bfdd2525","repository":"blog-talk","owner":"Forri1996","createIssueManually":true};
+        const gitalk = new Gitalk({
+            clientID: '',
+            clientSecret: '',
+            repo: '',
+            owner: '',
+            admin: [''],
+            id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49),       // Ensure uniqueness and length less than 50
+            distractionFreeMode: false,  // Facebook-like distraction free mode
+            createIssueManually: 
+        });
+
+        gitalk.render('gitalk-container')
+
+    </script>
+
+
+
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a aria-label="跳转至github" href="https://github.com/Forri1996" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+
+
+      </div>
+    </div>
+    
+<script id="hexo-configurations"> window.theme_config = {"image":{"lazyload_enable":true,"photo_zoom":"simple-lightbox"}}; window.is_post = true; </script>
+
+<script src="/js/main.js"></script>
+
+
+
+    <script async src="https://hm.baidu.com/hm.js?ForrisBlog1996"></script>
+
+
+
+
+  <script src="/js/simple-lightbox.min.js"></script><script>document.addEventListener('DOMContentLoaded', function() {new SimpleLightbox('.post-detail .simple-lightbox', {fileExt: false,captionsData:'alt'});});</script></body>
+</html>
+
