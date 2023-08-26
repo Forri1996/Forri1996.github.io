@@ -103,6 +103,6 @@ theme: minimalism
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://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@github.com/Forri1996/Forri1996.github.io.git
+  repo: https://token@github.com/Forri1996/Forri1996.github.io.git
   # example, https://github.com/hexojs/hexojs.github.io
   branch: public_branch
