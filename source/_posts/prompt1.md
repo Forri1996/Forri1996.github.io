@@ -1,5 +1,5 @@
 ---
-title: chatgpt 提示词学习
+title: chatgpt 提示词学习-专利
 date: 2023-08-17 10:33:29
 tags: 提示词学习
 ---
