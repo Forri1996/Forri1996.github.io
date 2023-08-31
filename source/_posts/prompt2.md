@@ -1,7 +1,7 @@
 ---
-title: prompt2
+title: 大众点评商家评论prompt
 date: 2023-08-27 15:50:23
-tags:
+tags: 提示词学习
 ---
 
 ## roles
