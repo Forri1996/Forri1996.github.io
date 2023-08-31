@@ -137,9 +137,11 @@
 <h1 id="关于副业"><a href="#关于副业" class="headerlink" title="关于副业"></a>关于副业</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/iamsujie/article/details/131950231?spm=1001.2014.3001.5501">副业，最好兴趣驱动，但有两个误区</a></p>
 
         </div>
+          
         <div class="top-div">
           <ol class="top-box"><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E6%96%87%E7%AB%A0%E7%82%B9%E8%AF%84-%E8%A7%82%E7%82%B9%E8%BE%93%E5%87%BA"><span class="top-box-text">文章点评&amp;观点输出</span></a></li><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E4%B8%80%E4%BA%9B%E6%84%9F%E5%8F%97"><span class="top-box-text">一些感受</span></a></li><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E5%85%B3%E4%BA%8E%E5%89%AF%E4%B8%9A"><span class="top-box-text">关于副业</span></a></li></ol>
         </div>
+          
       </div>
     </div>
 
@@ -164,14 +166,14 @@
     <script>
         const config = {"clientId":"ef1dde43d6cdf1cf1134","clientSecret":"8d6c18ab3ab92bc7ba66395f634fa216bfdd2525","repository":"blog-talk","owner":"Forri1996","createIssueManually":true};
         const gitalk = new Gitalk({
-            clientID: '',
-            clientSecret: '',
-            repo: '',
-            owner: '',
-            admin: [''],
+            clientID: config.clientId,
+            clientSecret: config.clientSecret,
+            repo: config.repository,
+            owner: config.owner,
+            admin: [config.owner],
             id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49),       // Ensure uniqueness and length less than 50
             distractionFreeMode: false,  // Facebook-like distraction free mode
-            createIssueManually: 
+            createIssueManually: config.createIssueManually ? true : false
         });
 
         gitalk.render('gitalk-container')

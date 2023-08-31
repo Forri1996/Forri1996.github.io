@@ -13,20 +13,22 @@
 <meta name="keywords" content="openstack学习系列1, Forri&#39;s Blog">
 <meta name="description" content="
 本系列学习参考博文：每天5分钟玩转 OPENSTACK系列教程
+原文地址：原文
 
 什么是openstack？引用官网的介绍：
 
-OpenStack is a cloud operating system that controls large pools">
+OpenStack is a cloud operating system that controls lar">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta property="og:title" content="openstack学习系列1">
 <meta property="og:description" content="
 本系列学习参考博文：每天5分钟玩转 OPENSTACK系列教程
+原文地址：原文
 
 什么是openstack？引用官网的介绍：
 
-OpenStack is a cloud operating system that controls large pools">
+OpenStack is a cloud operating system that controls lar">
 
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="stylesheet" href="/style/main.css">
@@ -105,6 +107,7 @@ OpenStack is a cloud operating system that controls large pools">
         <div class="post-content">
           <blockquote>
 <p>本系列学习参考博文：<a target="_blank" rel="noopener" href="https://www.xjimmy.com/openstack-5min">每天5分钟玩转 OPENSTACK系列教程</a></p>
+<p>原文地址：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/CloudMan6/p/5975106.html">原文</a></p>
 </blockquote>
 <p>什么是openstack？引用官网的介绍：</p>
 <blockquote>
@@ -122,11 +125,83 @@ OpenStack is a cloud operating system that controls large pools">
 <li>Horizon： 提供一个web门户，提供可视化的操作界面。</li>
 </ul>
 <p>创建一个vm的大致流程：<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://bbs-img.huaweicloud.com/blogs/img/1597721607171021214.png"><img   src="/images/loading.svg" data-src="https://bbs-img.huaweicloud.com/blogs/img/1597721607171021214.png"  alt="image" lazyload></a></p>
+<p>个人认为，众多组件中学习难度最大的应该是neutron。因为他涉及到大量的网络知识。所以这边也已neutron为切入点，优先看下。正好也弥补网络相关的基础。</p>
+<p>这里引用原文中对neutron功能的描述</p>
+<h2 id="二层交换-Switching"><a href="#二层交换-Switching" class="headerlink" title="二层交换 Switching"></a>二层交换 Switching</h2><p>Nova 的 Instance 是通过虚拟交换机连接到虚拟二层网络的。</p>
+<p>Neutron 支持多种虚拟交换机，包括 Linux 原生的 Linux Bridge 和 Open vSwitch。Open vSwitch（OVS）是一个开源的虚拟交换机，它支持标准的管理接口和协议。</p>
+<p>利用 Linux Bridge 和 OVS，Neutron 除了可以创建传统的 VLAN 网络，还可以创建基于隧道技术的 Overlay 网络，比如 VxLAN 和 GRE（Linux Bridge 目前只支持 VxLAN）。</p>
+<h2 id="三层路由-Routing"><a href="#三层路由-Routing" class="headerlink" title="三层路由 Routing"></a>三层路由 Routing</h2><p>Instance 可以配置不同网段的 IP，Neutron 的 router（虚拟路由器）实现 instance 跨网段通信。<br>router 通过 IP forwarding，iptables 等技术来实现路由和 NAT。</p>
+<p>我们将在后面章节讨论如何在 Neutron 中配置 router 来实现 instance 之间，以及与外部网络的通信。</p>
+<p>在这一段描述中提到了很多关键名词：</p>
+<ul>
+<li>交换机：网络交换机可以实现两个或多个IT 设备之间的相互通信。 除了连接到PC 和打印机等终端设备外，交换机还可以连接到其他交换机、路由器和防火墙等所有可以与其他设备进行进一步连接的中间设备。 网络交换机还可以支持虚拟网络，实现互连设备的大型网络通信，同时出于安全目的将特定设备组与其他设备分割，而无需昂贵的单独物理网络。</li>
+<li>路由器：1WAN-N_LAN 一根网线，通过路由器对接多个设备上网。</li>
+<li>Overlay网络：运行在underlay网络之上的一层虚拟网络。两者的关系有点像物理机和虚拟机。具体的介绍可以查看这篇博文，相对比较好理解：<a target="_blank" rel="noopener" href="https://draveness.me/whys-the-design-overlay-network/">为什么集群需要 Overlay 网络</a></li>
+</ul>
+<h2 id="了解各种网络设备及其通信架构"><a href="#了解各种网络设备及其通信架构" class="headerlink" title="了解各种网络设备及其通信架构"></a>了解各种网络设备及其通信架构</h2><p>tap interface<br>命名为 tapN (N 为 0, 1, 2, 3……)。</p>
+<p>linux bridge<br>命名为 brqXXXX。</p>
+<p>vlan interface<br>命名为 ethX.Y（X 为 interface 的序号，Y 为 vlan id）。</p>
+<p>vxlan interface<br>命名为 vxlan-Z（z 是 VNI）。</p>
+<p>物理 interface<br>命名为 ethX（X 为 interface 的序号）。</p>
+<h2 id="VLAN-内部网络互通"><a href="#VLAN-内部网络互通" class="headerlink" title="VLAN 内部网络互通"></a>VLAN 内部网络互通</h2><p>下图是vlan的一个部署架构图</p>
+<p>vm0和vm1是两台虚拟机，通过tap连接到LinuxBridge。在通过bridge连接到eth1物理网卡上的eth1.100的虚拟局域网（vlan）<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515490886232391.jpg"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515490886232391.jpg"  alt="img" lazyload></a></p>
+<p>下面介绍如何通过路由服务提供跨subnet互联互通的功能。可以通过硬件实现，也可以通过软件实现。架构参考下面这张图<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515496154683630.png"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515496154683630.png"  lazyload></a></p>
+<p>当vm1要与vm3通信时，其数据流转路径如下：</p>
+<p>vm1发出数据包，要访问172.16.101.3，通过vlan100进入router。router发现172.16.101.3与vlan101在同一个网段，则将该数据包发送至vlan101，从而触达vm3。</p>
+<p>软件实现逻辑与硬件一致。如果需要使用软件，则需要依赖L3agent，实现虚拟的router服务。</p>
+<p><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515497329156369.png"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515497329156369.png"  lazyload></a></p>
+<p>l3agent会为每个router创建一个namespace，从而实现多租户下的网络覆盖能力。</p>
+<h2 id="VLAN外部网络互通"><a href="#VLAN外部网络互通" class="headerlink" title="VLAN外部网络互通"></a>VLAN外部网络互通</h2><p>到这里我们实现了集群内的多vm网络互通，接下来我们要掌握如何配置外网访问能力。</p>
+<p>对于私有云来说，外部网络一般指的是 intranet（内部网），对公有云来说，就是指的互联网。</p>
+<p>为了实现外网访问的能力，需要将外网连接到虚拟的路由器。我们在路由器上新增一个10.10.10.2网关，并通过Bridge连接到eth2网卡<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515498324683035.png"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515498324683035.png"  lazyload></a></p>
+<p>配置到这里集群内的vm就可以访问到外部网络了。但是外部网络还无法向vm通信（比如ssh，curl），这个问题可以通过配置浮动IP来解决。</p>
+<h2 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h2><p>当数据包从instance发向外网时，router会修改包的原地址为外网地址，保证数据包转发到外网，同时也记录了instance和外网地址的对应关系，保证回包后可以正确返回给instance。</p>
+<p>这个行为动作称之为Source NAT</p>
+<ul>
+<li>NAT(Source Network Address Translation)：源网络地址转换，内部地址要访问公网上的服务时，内部地址会主动发起连接，将内部地址转换为公网IP。有关这个地址转换称为SNAT。</li>
+</ul>
+<p> 当 router 接收到从外网发来的包，如果目的地址是 floating IP 10.10.10.3，将目的地址修改为 cirros-vm3 的 IP 172.16.101.3。这样外网的包就能送达到 cirros-vm3。 </p>
+<p> 这个行为动作称之为Destination NAT</p>
+<ul>
+<li>DNAT(Destination Network Address Translation)：目标地址转换，内部需要对外提供服务时，外部主动发起连接，路由器或者防火墙的网络接收到这个连接，然后将连接转换到内部，此过程是由带公网ip的网关代替内部服务来接收外部的连接，然后在内部做地址转换。此转换成为DNAT，主要用于内部服务对外发布。</li>
+</ul>
+<h2 id="VxLan"><a href="#VxLan" class="headerlink" title="VxLan"></a>VxLan</h2><p> 在大规模集群环境下，vlan无法支持4094以上的网段的配置，所以有了vxlan，通过新的协议对vlan进行了扩展。</p>
+<p> 使用vxlan主要依赖一个叫VTEP（VXLAN tunnel endpoint）的设备处理新协议的封装和解封（很像一个adapter）</p>
+<p> <a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515499607622277.jpg"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180109/1515499607622277.jpg"  lazyload></a></p>
+<p> 数据包从Host-A出发，经过VTEP1封包，发送到router-1，然后再发送到router-2，再把封装过的数据包发给VTEP2，经过解包后发给Host-B，完成两个主机之间的通讯。</p>
+<h2 id="L2Population"><a href="#L2Population" class="headerlink" title="L2Population"></a>L2Population</h2><p> 由于vxlan支持的配置数量非常多，其Scalability（可伸缩性）要求就会比较高。</p>
+<p> 因为量变容易导致质变，比如在APR的场景下，如果host数量非常多，当发送广播报文的时候，成本就会很高，可伸缩性就成了笑话。</p>
+<p> 此时就有了L2 Population。他的作用是在VTEP上提供一个缓存的能力，使其能提前知道</p>
+<ol>
+<li>VM IP — MAC 对应关系</li>
+<li>VM — VTEP 的对应关系</li>
+</ol>
+<p>当发送广播报文的时候，通过L2Population代理直接返回对应的关系，解决了广播封包的问题，实现了可伸缩性的问题解决。</p>
+<p>那么如果关系有变化怎么办？</p>
+<p>neutron会感知到变化的消息，通过rpc通信通知各个节点的agent去更新对应的关系缓存。</p>
+<p>通过这个组件，可以避免不必要的隧道连接和广播。</p>
+<h2 id="安全组"><a href="#安全组" class="headerlink" title="安全组"></a>安全组</h2><p>Neutron提供了两种网络流量管理方法：</p>
+<ul>
+<li>安全组</li>
+<li>防火墙</li>
+</ul>
+<p>安全组的原理是通过 iptables 对 instance 所在计算节点的网络流量进行过滤。</p>
+<p>安全组有以下特性：</p>
+<ol>
+<li>通过宿主机上 iptables 规则控制进出 instance 的流量。</li>
+<li>安全组作用在 instance 的 port 上。</li>
+<li>安全组的规则都是 allow，不能定义 deny 的规则。</li>
+<li>instance 可应用多个安全组叠加使用这些安全组中的规则。</li>
+</ol>
+<h2 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h2><p>与安全组类似，不同之处在于，安全组作用于instance，而防火墙作用于router，可以在安全组之前控制外部来的流量。</p>
+<h2 id="OVS（OpenVSwitch）"><a href="#OVS（OpenVSwitch）" class="headerlink" title="OVS（OpenVSwitch）"></a>OVS（OpenVSwitch）</h2><p>linux bridge的一个替换方案。</p>
 
         </div>
-        <div class="top-div">
           
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%BA%8C%E5%B1%82%E4%BA%A4%E6%8D%A2-Switching"><span class="top-box-text">二层交换 Switching</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%B8%89%E5%B1%82%E8%B7%AF%E7%94%B1-Routing"><span class="top-box-text">三层路由 Routing</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%BA%86%E8%A7%A3%E5%90%84%E7%A7%8D%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%8F%8A%E5%85%B6%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84"><span class="top-box-text">了解各种网络设备及其通信架构</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VLAN-%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C%E4%BA%92%E9%80%9A"><span class="top-box-text">VLAN 内部网络互通</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VLAN%E5%A4%96%E9%83%A8%E7%BD%91%E7%BB%9C%E4%BA%92%E9%80%9A"><span class="top-box-text">VLAN外部网络互通</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#NAT"><span class="top-box-text">NAT</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VxLan"><span class="top-box-text">VxLan</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#L2Population"><span class="top-box-text">L2Population</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E5%AE%89%E5%85%A8%E7%BB%84"><span class="top-box-text">安全组</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99"><span class="top-box-text">防火墙</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#OVS%EF%BC%88OpenVSwitch%EF%BC%89"><span class="top-box-text">OVS（OpenVSwitch）</span></a></li></ol>
         </div>
+          
       </div>
     </div>
 
@@ -151,14 +226,14 @@ OpenStack is a cloud operating system that controls large pools">
     <script>
         const config = {"clientId":"ef1dde43d6cdf1cf1134","clientSecret":"8d6c18ab3ab92bc7ba66395f634fa216bfdd2525","repository":"blog-talk","owner":"Forri1996","createIssueManually":true};
         const gitalk = new Gitalk({
-            clientID: '',
-            clientSecret: '',
-            repo: '',
-            owner: '',
-            admin: [''],
+            clientID: config.clientId,
+            clientSecret: config.clientSecret,
+            repo: config.repository,
+            owner: config.owner,
+            admin: [config.owner],
             id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49),       // Ensure uniqueness and length less than 50
             distractionFreeMode: false,  // Facebook-like distraction free mode
-            createIssueManually: 
+            createIssueManually: config.createIssueManually ? true : false
         });
 
         gitalk.render('gitalk-container')
