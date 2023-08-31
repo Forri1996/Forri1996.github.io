@@ -5,6 +5,8 @@ tags: openstack
 ---
 
 > 本系列学习参考博文：[每天5分钟玩转 OPENSTACK系列教程](https://www.xjimmy.com/openstack-5min)
+>
+>原文地址：[原文](https://www.cnblogs.com/CloudMan6/p/5975106.html)
 
 什么是openstack？引用官网的介绍：
 >OpenStack is a cloud operating system that controls large pools of compute, storage, 
@@ -49,3 +51,111 @@ router 通过 IP forwarding，iptables 等技术来实现路由和 NAT。
 - 交换机：网络交换机可以实现两个或多个IT 设备之间的相互通信。 除了连接到PC 和打印机等终端设备外，交换机还可以连接到其他交换机、路由器和防火墙等所有可以与其他设备进行进一步连接的中间设备。 网络交换机还可以支持虚拟网络，实现互连设备的大型网络通信，同时出于安全目的将特定设备组与其他设备分割，而无需昂贵的单独物理网络。
 - 路由器：1WAN-N_LAN 一根网线，通过路由器对接多个设备上网。
 - Overlay网络：运行在underlay网络之上的一层虚拟网络。两者的关系有点像物理机和虚拟机。具体的介绍可以查看这篇博文，相对比较好理解：[为什么集群需要 Overlay 网络](https://draveness.me/whys-the-design-overlay-network/)
+
+## 了解各种网络设备及其通信架构
+tap interface
+命名为 tapN (N 为 0, 1, 2, 3……)。
+
+linux bridge
+命名为 brqXXXX。
+
+vlan interface
+命名为 ethX.Y（X 为 interface 的序号，Y 为 vlan id）。
+
+vxlan interface
+命名为 vxlan-Z（z 是 VNI）。
+
+物理 interface
+命名为 ethX（X 为 interface 的序号）。
+
+## VLAN 内部网络互通
+
+下图是vlan的一个部署架构图
+
+vm0和vm1是两台虚拟机，通过tap连接到LinuxBridge。在通过bridge连接到eth1物理网卡上的eth1.100的虚拟局域网（vlan）
+![img](https://www.xjimmy.com/wp-content/uploads/image/20180109/1515490886232391.jpg)
+
+下面介绍如何通过路由服务提供跨subnet互联互通的功能。可以通过硬件实现，也可以通过软件实现。架构参考下面这张图
+![](https://www.xjimmy.com/wp-content/uploads/image/20180109/1515496154683630.png)
+
+当vm1要与vm3通信时，其数据流转路径如下：
+
+vm1发出数据包，要访问172.16.101.3，通过vlan100进入router。router发现172.16.101.3与vlan101在同一个网段，则将该数据包发送至vlan101，从而触达vm3。
+
+软件实现逻辑与硬件一致。如果需要使用软件，则需要依赖L3agent，实现虚拟的router服务。
+
+![](https://www.xjimmy.com/wp-content/uploads/image/20180109/1515497329156369.png)
+
+l3agent会为每个router创建一个namespace，从而实现多租户下的网络覆盖能力。
+
+## VLAN外部网络互通
+
+到这里我们实现了集群内的多vm网络互通，接下来我们要掌握如何配置外网访问能力。
+
+对于私有云来说，外部网络一般指的是 intranet（内部网），对公有云来说，就是指的互联网。
+
+为了实现外网访问的能力，需要将外网连接到虚拟的路由器。我们在路由器上新增一个10.10.10.2网关，并通过Bridge连接到eth2网卡
+![](https://www.xjimmy.com/wp-content/uploads/image/20180109/1515498324683035.png)
+
+配置到这里集群内的vm就可以访问到外部网络了。但是外部网络还无法向vm通信（比如ssh，curl），这个问题可以通过配置浮动IP来解决。
+
+## NAT
+
+当数据包从instance发向外网时，router会修改包的原地址为外网地址，保证数据包转发到外网，同时也记录了instance和外网地址的对应关系，保证回包后可以正确返回给instance。
+
+这个行为动作称之为Source NAT
+- NAT(Source Network Address Translation)：源网络地址转换，内部地址要访问公网上的服务时，内部地址会主动发起连接，将内部地址转换为公网IP。有关这个地址转换称为SNAT。
+
+
+ 当 router 接收到从外网发来的包，如果目的地址是 floating IP 10.10.10.3，将目的地址修改为 cirros-vm3 的 IP 172.16.101.3。这样外网的包就能送达到 cirros-vm3。 
+ 
+ 这个行为动作称之为Destination NAT
+ - DNAT(Destination Network Address Translation)：目标地址转换，内部需要对外提供服务时，外部主动发起连接，路由器或者防火墙的网络接收到这个连接，然后将连接转换到内部，此过程是由带公网ip的网关代替内部服务来接收外部的连接，然后在内部做地址转换。此转换成为DNAT，主要用于内部服务对外发布。
+
+## VxLan
+
+ 在大规模集群环境下，vlan无法支持4094以上的网段的配置，所以有了vxlan，通过新的协议对vlan进行了扩展。
+
+ 使用vxlan主要依赖一个叫VTEP（VXLAN tunnel endpoint）的设备处理新协议的封装和解封（很像一个adapter）
+
+ ![](https://www.xjimmy.com/wp-content/uploads/image/20180109/1515499607622277.jpg)
+
+ 数据包从Host-A出发，经过VTEP1封包，发送到router-1，然后再发送到router-2，再把封装过的数据包发给VTEP2，经过解包后发给Host-B，完成两个主机之间的通讯。
+
+## L2Population
+
+ 由于vxlan支持的配置数量非常多，其Scalability（可伸缩性）要求就会比较高。
+ 
+ 因为量变容易导致质变，比如在APR的场景下，如果host数量非常多，当发送广播报文的时候，成本就会很高，可伸缩性就成了笑话。
+
+ 此时就有了L2 Population。他的作用是在VTEP上提供一个缓存的能力，使其能提前知道
+1. VM IP — MAC 对应关系
+2. VM — VTEP 的对应关系
+
+当发送广播报文的时候，通过L2Population代理直接返回对应的关系，解决了广播封包的问题，实现了可伸缩性的问题解决。
+
+那么如果关系有变化怎么办？
+
+neutron会感知到变化的消息，通过rpc通信通知各个节点的agent去更新对应的关系缓存。
+
+通过这个组件，可以避免不必要的隧道连接和广播。
+
+## 安全组
+Neutron提供了两种网络流量管理方法：
+- 安全组
+- 防火墙
+
+安全组的原理是通过 iptables 对 instance 所在计算节点的网络流量进行过滤。
+
+安全组有以下特性：
+
+1. 通过宿主机上 iptables 规则控制进出 instance 的流量。
+2. 安全组作用在 instance 的 port 上。
+3. 安全组的规则都是 allow，不能定义 deny 的规则。
+4. instance 可应用多个安全组叠加使用这些安全组中的规则。
+
+## 防火墙
+与安全组类似，不同之处在于，安全组作用于instance，而防火墙作用于router，可以在安全组之前控制外部来的流量。
+
+## OVS（OpenVSwitch）
+linux bridge的一个替换方案。
