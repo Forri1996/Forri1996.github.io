@@ -158,4 +158,45 @@ Neutron提供了两种网络流量管理方法：
 与安全组类似，不同之处在于，安全组作用于instance，而防火墙作用于router，可以在安全组之前控制外部来的流量。
 
 ## OVS（OpenVSwitch）
-linux bridge的一个替换方案。
+在OVS中，数据包从实例发出到物理网卡，会设计如下几个设备：
+
+1. tap interface
+命名为 tapXXXX。
+2. linux bridge
+命名为 qbrXXXX。
+3. veth pair
+命名为 qvbXXXX, qvoXXXX。可以用于连接网桥
+4. OVS integration bridge
+命名为 br-int。
+5. OVS patch ports
+命名为 int-br-ethX 和 phy-br-ethX（X 为 interface 的序号）。可以用于连接网桥（连接2个ovs网桥优先使用这个）
+6. OVS provider bridge
+命名为 br-ethX（X 为 interface 的序号）。
+7. 物理 interface
+命名为 ethX（X 为 interface 的序号）。
+8. OVS tunnel bridge
+命名为 br-tun。
+
+### local network
+
+下面是一个localnetwork的拓扑图，vm1和vm2通过tap，linux bridge，以及两个vethpair设备连接到br-int，实现本地网络的互通。
+![](https://www.xjimmy.com/wp-content/uploads/image/20180110/1515547514439158.jpg)
+
+为什么 tapfc1c6ebb-71 不能像左边的 DHCP 设备 tap7970bdcd-f2 那样直接连接到 br-int 呢？
+其原因是： Open vSwitch 目前还不支持将 iptables 规则放在与它直接相连的 tap 设备上。
+
+如果做不到这一点，就无法实现 Security Group 功能。
+为了支持 Security Group，不得不多引入一个 Linux Bridge 支持 iptables。
+
+那么，是否是连接到br-int网桥上的所有设备都可以互相通信？答案是否定的。port通过tag来标识不同的VLAN，实现网络的隔离。
+![](https://www.xjimmy.com/wp-content/uploads/image/20180110/1515547784176449.jpg)
+
+### flat network
+中文直译为扁平网络，是不带tag的，主要用于不同节点之间的vm通信。
+
+![](https://www.xjimmy.com/wp-content/uploads/image/20180110/1515548964919591.jpg)
+
+### vlan network
+
+
+### vxlan network
