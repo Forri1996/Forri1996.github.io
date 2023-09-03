@@ -1,35 +1,65 @@
 ---
-title: 网球教学V1
-date: 2023-08-14 21:44:43
-tags: 网球
+title: 小傅哥gpt课程学习记录
+date: 2023-09-03 21:44:43
+tags: 星球学习
 ---
-# 初级正反手
-首先要学会怎么握拍，将拍子放在地面上，虎口朝下，拿起来就行。
+# 环境准备
+- docker
+- java
+- mvn
+- git
 
-然后以中线为锚定点，站位稍微靠中线往后一点，要求击球点刚好坐落于中线的位置。
+安装好以上环境依赖以后，可以部署一下 portainer ，这是一款docker管理平台。安装以后可以方便后续操作。
 
-击球注意控制力道，不可以太重，将球的落点控制在界内。
+# 部署流程
+为了将java程序部署在docker中，需要一下几个步骤：
+1. 打jar包 
 
-击球结束后，收拍要到位，拍子回到另外一侧的肩膀，击球手肘指向球的前进路线方向。
+通过 mvn package 在target目录下生成jar包即可。
 
-保持排面的水平与垂直。
+2. 生成镜像
 
-不需要过多的引拍，因为这将会提高难度。
-要找到那个击球点击中球的感觉。
+为了生成镜像，我们首先需要一份Dockerfile文件：
+```
+# 基础镜像
+FROM openjdk:8-jre-slim
+# 作者
+MAINTAINER forri
+# 配置
+ENV PARAMS=""
+# 时区
+ENV TZ=PRC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# 添加应用
+ADD target/chatgpt-api.jar /chatgpt-api.jar
+## 在镜像运行为容器后执行的命令
+ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /chatgpt-api.jar $PARAMS"]
+```
+有了该文件以后，在项目根目录执行命令：
+```
+docker build -f ./Dockerfile -t forri/chatgpt-api:1.5 .
+```
+随即便可以在本地生成一个镜像，可以通过
+```
+docker images
+```
+命令查看
 
-要感受击球点的位置，将注意力集中在球上。感受球拍击中球的位置，身体躯干，手臂，与球的相对位置。找到最舒服的一种击球的位置。
+3. push到dockerhub仓库
 
-加速击球的过程，保持手腕的紧绷，不要又一个往后缩的，鞭甩的动作。这样会提高很大的难度。
+为了push到远端仓库，首先需要在本地登录dockerhub账号：
+```
+docker login
+```
+登录完成以后，执行命令：
+```
+ docker push forri/chatgpt-api:1.5
+```
+即可将打包的镜像推送到远端，然后在任何一个包含docker环境的服务器上，随取随用。
 
-反手同理，左手作为发力手，找准击球点，击球后左手手肘指向球的前进路线方向。
+4. 在需要用的地方，拉取镜像后启动
 
-# 发球
-抛球尽量抛在线内一点点的位置。击球的时候，击球点应该在整个躯干的最前面的位置。
-
-# 暴力正手
-拉拍要稳定，垫步，左手推拍引拍，将画的圈固定住，保证球的稳定性。
-
-打出有力量的球，要借助腿部动力链。引拍击球前，半蹲，然后在挥拍的一刻蹬腿转体，形成一条从脚到腿到腰到手最后到球拍的动力链，借助肌肉力量最发达的腿部做出发力。
-自己练习的话，可以抛球，在空中转体击球。
-
-记住背要挺直
+```
+docker pull forri/chatgpt-api:1.5
+docker run -p 8080:8080 --name chatgpt-api -d forri/chatgpt-api:1.5
+```
