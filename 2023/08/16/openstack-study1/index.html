@@ -194,12 +194,38 @@ OpenStack is a cloud operating system that controls lar">
 <li>instance 可应用多个安全组叠加使用这些安全组中的规则。</li>
 </ol>
 <h2 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h2><p>与安全组类似，不同之处在于，安全组作用于instance，而防火墙作用于router，可以在安全组之前控制外部来的流量。</p>
-<h2 id="OVS（OpenVSwitch）"><a href="#OVS（OpenVSwitch）" class="headerlink" title="OVS（OpenVSwitch）"></a>OVS（OpenVSwitch）</h2><p>linux bridge的一个替换方案。</p>
+<h2 id="OVS（OpenVSwitch）"><a href="#OVS（OpenVSwitch）" class="headerlink" title="OVS（OpenVSwitch）"></a>OVS（OpenVSwitch）</h2><p>在OVS中，数据包从实例发出到物理网卡，会设计如下几个设备：</p>
+<ol>
+<li>tap interface<br>命名为 tapXXXX。</li>
+<li>linux bridge<br>命名为 qbrXXXX。</li>
+<li>veth pair<br>命名为 qvbXXXX, qvoXXXX。可以用于连接网桥</li>
+<li>OVS integration bridge<br>命名为 br-int。</li>
+<li>OVS patch ports<br>命名为 int-br-ethX 和 phy-br-ethX（X 为 interface 的序号）。可以用于连接网桥（连接2个ovs网桥优先使用这个）</li>
+<li>OVS provider bridge<br>命名为 br-ethX（X 为 interface 的序号）。</li>
+<li>物理 interface<br>命名为 ethX（X 为 interface 的序号）。</li>
+<li>OVS tunnel bridge<br>命名为 br-tun。</li>
+</ol>
+<h3 id="local-network"><a href="#local-network" class="headerlink" title="local network"></a>local network</h3><p>下面是一个localnetwork的拓扑图，vm1和vm2通过tap，linux bridge，以及两个vethpair设备连接到br-int，实现本地网络的互通。<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515547514439158.jpg"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515547514439158.jpg"  lazyload></a></p>
+<p>为什么 tapfc1c6ebb-71 不能像左边的 DHCP 设备 tap7970bdcd-f2 那样直接连接到 br-int 呢？<br>其原因是： Open vSwitch 目前还不支持将 iptables 规则放在与它直接相连的 tap 设备上。</p>
+<p>如果做不到这一点，就无法实现 Security Group 功能。<br>为了支持 Security Group，不得不多引入一个 Linux Bridge 支持 iptables。</p>
+<p>那么，是否是连接到br-int网桥上的所有设备都可以互相通信？答案是否定的。port通过tag来标识不同的VLAN，实现网络的隔离。<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515547784176449.jpg"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515547784176449.jpg"  lazyload></a></p>
+<h3 id="flat-network"><a href="#flat-network" class="headerlink" title="flat network"></a>flat network</h3><p>中文直译为扁平网络，是不带tag的，主要用于不同节点之间的vm通信。</p>
+<p><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515548964919591.jpg"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515548964919591.jpg"  lazyload></a></p>
+<h3 id="vlan-network"><a href="#vlan-network" class="headerlink" title="vlan network"></a>vlan network</h3><p>vlan网络是带tag的网络，我们用一张图来看下vlan网络的结构<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515550781564184.jpg"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180110/1515550781564184.jpg"  lazyload></a></p>
+<ul>
+<li>cirros-vm1 位于控制节点，属于 vlan100。</li>
+<li>cirros-vm2 位于计算节点，属于 vlan100。</li>
+<li>cirros-vm3 位于计算节点，属于 vlan101。</li>
+</ul>
+<p>在LinuxBridge中，我们通过 eth1.100, eth1.101 等 VLAN interface 来隔离不同的 VLAN</p>
+<p>在OVS中，所有的 instance 都连接到同一个网桥 br-int，Open vSwitch 通过 flow rule（流规则）来指定如何对进出 br-int 的数据进行转发，进而实现 vlan 之间的隔离。</p>
+<p>具体来说：当数据进出 br-int 时，flow rule 可以修改、添加或者剥掉数据包的 VLAN tag，Neutron 负责创建这些 flow rule 并将它们配置到 br-int，br-eth1 等 Open vSwitch 上。</p>
+<h3 id="vxlan-network"><a href="#vxlan-network" class="headerlink" title="vxlan network"></a>vxlan network</h3><p>说实话，学到这边还是很懵圈，对网络的整体架构有一定的概念，但还是比较模糊。</p>
 
         </div>
           
         <div class="top-div">
-          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%BA%8C%E5%B1%82%E4%BA%A4%E6%8D%A2-Switching"><span class="top-box-text">二层交换 Switching</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%B8%89%E5%B1%82%E8%B7%AF%E7%94%B1-Routing"><span class="top-box-text">三层路由 Routing</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%BA%86%E8%A7%A3%E5%90%84%E7%A7%8D%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%8F%8A%E5%85%B6%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84"><span class="top-box-text">了解各种网络设备及其通信架构</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VLAN-%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C%E4%BA%92%E9%80%9A"><span class="top-box-text">VLAN 内部网络互通</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VLAN%E5%A4%96%E9%83%A8%E7%BD%91%E7%BB%9C%E4%BA%92%E9%80%9A"><span class="top-box-text">VLAN外部网络互通</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#NAT"><span class="top-box-text">NAT</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VxLan"><span class="top-box-text">VxLan</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#L2Population"><span class="top-box-text">L2Population</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E5%AE%89%E5%85%A8%E7%BB%84"><span class="top-box-text">安全组</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99"><span class="top-box-text">防火墙</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#OVS%EF%BC%88OpenVSwitch%EF%BC%89"><span class="top-box-text">OVS（OpenVSwitch）</span></a></li></ol>
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%BA%8C%E5%B1%82%E4%BA%A4%E6%8D%A2-Switching"><span class="top-box-text">二层交换 Switching</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%B8%89%E5%B1%82%E8%B7%AF%E7%94%B1-Routing"><span class="top-box-text">三层路由 Routing</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E4%BA%86%E8%A7%A3%E5%90%84%E7%A7%8D%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%8F%8A%E5%85%B6%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84"><span class="top-box-text">了解各种网络设备及其通信架构</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VLAN-%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C%E4%BA%92%E9%80%9A"><span class="top-box-text">VLAN 内部网络互通</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VLAN%E5%A4%96%E9%83%A8%E7%BD%91%E7%BB%9C%E4%BA%92%E9%80%9A"><span class="top-box-text">VLAN外部网络互通</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#NAT"><span class="top-box-text">NAT</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#VxLan"><span class="top-box-text">VxLan</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#L2Population"><span class="top-box-text">L2Population</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E5%AE%89%E5%85%A8%E7%BB%84"><span class="top-box-text">安全组</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99"><span class="top-box-text">防火墙</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#OVS%EF%BC%88OpenVSwitch%EF%BC%89"><span class="top-box-text">OVS（OpenVSwitch）</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#local-network"><span class="top-box-text">local network</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#flat-network"><span class="top-box-text">flat network</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#vlan-network"><span class="top-box-text">vlan network</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#vxlan-network"><span class="top-box-text">vxlan network</span></a></li></ol></li></ol>
         </div>
           
       </div>
