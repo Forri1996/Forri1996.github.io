@@ -197,6 +197,17 @@ Neutron提供了两种网络流量管理方法：
 ![](https://www.xjimmy.com/wp-content/uploads/image/20180110/1515548964919591.jpg)
 
 ### vlan network
+vlan网络是带tag的网络，我们用一张图来看下vlan网络的结构
+![](https://www.xjimmy.com/wp-content/uploads/image/20180110/1515550781564184.jpg)
+- cirros-vm1 位于控制节点，属于 vlan100。
+- cirros-vm2 位于计算节点，属于 vlan100。
+- cirros-vm3 位于计算节点，属于 vlan101。
 
+在LinuxBridge中，我们通过 eth1.100, eth1.101 等 VLAN interface 来隔离不同的 VLAN
 
+在OVS中，所有的 instance 都连接到同一个网桥 br-int，Open vSwitch 通过 flow rule（流规则）来指定如何对进出 br-int 的数据进行转发，进而实现 vlan 之间的隔离。
+
+具体来说：当数据进出 br-int 时，flow rule 可以修改、添加或者剥掉数据包的 VLAN tag，Neutron 负责创建这些 flow rule 并将它们配置到 br-int，br-eth1 等 Open vSwitch 上。
 ### vxlan network
+
+说实话，学到这边还是很懵圈，对网络的整体架构有一定的概念，但还是比较模糊。
