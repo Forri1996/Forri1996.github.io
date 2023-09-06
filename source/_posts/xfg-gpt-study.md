@@ -1,5 +1,5 @@
 ---
-title: 小傅哥gpt课程学习记录
+title: devops学习
 date: 2023-09-03 21:44:43
 tags: 星球学习
 ---
