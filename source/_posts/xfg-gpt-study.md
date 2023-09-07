@@ -1,5 +1,5 @@
 ---
-title: devops学习
+title: chatgpt工程部署
 date: 2023-09-03 21:44:43
 tags: 星球学习
 ---

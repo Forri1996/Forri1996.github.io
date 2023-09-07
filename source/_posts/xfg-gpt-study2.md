@@ -1,5 +1,5 @@
 ---
-title: xfg-gpt-study2
+title: chatgpt对接代码
 date: 2023-09-05 17:17:58
 tags: 星球学习
 ---
