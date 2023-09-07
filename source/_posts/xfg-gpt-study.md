@@ -1,5 +1,5 @@
 ---
-title: 小傅哥gpt课程学习记录
+title: chatgpt工程部署
 date: 2023-09-03 21:44:43
 tags: 星球学习
 ---
@@ -63,6 +63,7 @@ docker login
 docker pull forri/chatgpt-api:1.5
 docker run -p 8080:8080 --name chatgpt-api -d forri/chatgpt-api:1.5
 ```
+
 
 # 启动代理网关
 执行命令
@@ -135,3 +136,120 @@ docker run \
 127.0.0.1 fotech.cn
 ```
 访问http://fotech.cn/success成功！
+
+
+
+# 配置自动化部署
+为了实现自动化的容器部署，使用github action能力实现：
+- 提交代码到main分支后，自动触发docker build 打包镜像上传dockerhub
+- ssh虚拟机，自动拉取最新镜像并部署
+
+由于项目中依赖了chatgpt-sdk-java这个包，但是这个包没有上传到maven中央仓库，所以在打包的时候会提示包找不到的错误
+
+本地可以通过手动install来解决，但是如果要用github action，这个方案就行不通了。
+
+两个办法：
+- 将sdk集成到data工程
+- 上传sdk到中央仓库
+
+这里使用第一个方案。
+
+为了验证确实部署了新的代码上容器，新增一个接口用于部署后的验证：
+```
+127.0.0.1:8091/api/v1/auth/testcicd
+```
+
+准备好代码后，继续下面的操作（代码修改好后记得在本地 mvn package 并且能成功打包，再继续）
+
+操作步骤
+- 注册dockerhub并获得accesstoken，并配置到github action的variables中
+- 获取部署服务器的ssh私钥(注意是私钥)，并配置到github action的variables中
+- 将服务器公钥添加到keys文件(注意是公钥)
+```
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
+在代码根目录添加文件夹：.github/workflows/maven.yml
+代码内容：
+```
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  REGISTRY: docker.io  # 默认为 docker.io，即去 Docker Hub 上找
+  IMAGE_NAME: ${{ github.event.repository.name }}  # 使用 GitHub Actions 提供的能力，可以自动获取仓库名
+  IMAGE_TAG: latest  # Docker Image 的 tag，为了方便我直接设置 latest
+  PORT: 8091  # 服务要暴露的端口，可以改
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 8  # 可以改版本
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'  # 可以改版本
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ secrets.DOCKER_HUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      # 连接到远程服务器
+      - name: Connect to server
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 初始化 knownhosts
+      - name: Setup knownhosts
+        run: ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      # 触发服务器部署脚本
+      - name: Trigger server deployment script
+        run: |
+          ssh root@${{ secrets.SERVER_HOST }} "docker stop ${{ env.IMAGE_NAME }} || true"
+          ssh root@${{ secrets.SERVER_HOST }} "docker rm ${{ env.IMAGE_NAME }} || true"
+          ssh root@${{ secrets.SERVER_HOST }} "docker pull ${{ secrets.DOCKER_HUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          ssh root@${{ secrets.SERVER_HOST }} "docker run -p ${{ env.PORT }}:${{ env.PORT}} --name ${{ env.IMAGE_NAME }} -d ${{ secrets.DOCKER_HUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+```
+
+提交代码，等待流水线执行完成后，到Portainer上检查部署情况，成功！
+![image](https://github.com/Forri1996/blog-talk/assets/128824087/ca87ecae-d812-4e17-8697-cb3ffc92840c)
+![image](https://github.com/Forri1996/blog-talk/assets/128824087/85942aca-9659-432c-a250-4cf0f96a7f57)
+![image](https://github.com/Forri1996/blog-talk/assets/128824087/4265198c-3287-4453-947a-8b7fddb9c8a7)
+
+这样，后续迭代开发只需要在dev分支开发测试完成，然后merge到main分支后提交，即可自动部署到云服务。
+
+参考文档：[通过 GitHub Actions 完成 Spring Boot 项目的 CI/CD（基于 Docker）](https://zhuanlan.zhihu.com/p/590967429)
