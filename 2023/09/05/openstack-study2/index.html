@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+    
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+    
+
+<meta charset="utf-8" >
+
+<title>openstack学习系列-Cinder</title>
+<meta name="keywords" content="openstack学习系列-Cinder, Forri&#39;s Blog">
+<meta name="description" content="
+本系列学习参考博文：每天5分钟玩转 OPENSTACK系列教程
+原文地址：原文
+
+本章继续学习关于Cinder相关的知识。
+操作系统获取存储空间主要有两种方法：
+
+挂数据盘。
+依赖分布式的文件系统
+
+第一种方案一般称之为块存储，每块裸硬盘">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="openstack学习系列-Cinder">
+<meta property="og:description" content="
+本系列学习参考博文：每天5分钟玩转 OPENSTACK系列教程
+原文地址：原文
+
+本章继续学习关于Cinder相关的知识。
+操作系统获取存储空间主要有两种方法：
+
+挂数据盘。
+依赖分布式的文件系统
+
+第一种方案一般称之为块存储，每块裸硬盘">
+
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+  <link rel="stylesheet" href="/style/simple-lightbox.min.css"><meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://forri1996.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="logo" width="32px" height="32px">
+      </a>
+      <a href="http://forri1996.github.io">
+        <h1 class="site-title">Forri&#39;s Blog</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        首页
+      </a>
+    
+  
+    
+      <a href="/tags" class="menu purple-link">
+        标签
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        归档
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        关于
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">openstack学习系列-Cinder</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2023-09-05</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/openstack/">
+              openstack
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <blockquote>
+<p>本系列学习参考博文：<a target="_blank" rel="noopener" href="https://www.xjimmy.com/openstack-5min">每天5分钟玩转 OPENSTACK系列教程</a></p>
+<p>原文地址：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/CloudMan6/p/5975106.html">原文</a></p>
+</blockquote>
+<p>本章继续学习关于Cinder相关的知识。</p>
+<p>操作系统获取存储空间主要有两种方法：</p>
+<ul>
+<li>挂数据盘。</li>
+<li>依赖分布式的文件系统</li>
+</ul>
+<p>第一种方案一般称之为块存储，每块裸硬盘一般称之为卷（volume）</p>
+<p>第二种方案叫做文件系统存储。NAS 和 NFS 服务器，以及各种分布式文件系统提供的都是这种存储。</p>
+<p>Cinder的核心能力主要有三</p>
+<ul>
+<li>提供API接口，方便管理</li>
+<li>提供调度器管理volume的分配</li>
+<li>提供driver对接多种存储方式，包括 LVM，NFS，Ceph 等。</li>
+</ul>
+<p>Cinder的部署架构如图</p>
+<p><a class="simple-lightbox" target="_blank" rel="noopener" href="https://www.xjimmy.com/wp-content/uploads/image/20180108/1515423889643481.png"><img   src="/images/loading.svg" data-src="https://www.xjimmy.com/wp-content/uploads/image/20180108/1515423889643481.png"  lazyload></a></p>
+<p>其中，api模块主要提供第一个核心能力，负责对外暴露接口。</p>
+<p>scheduler模块提供第二个核心能力，通过算法选择最合适的存储节点存储volume</p>
+<p>provider模块提供第三个核心能力，通过driver对接对中存储方式</p>
+<p>volume模块与 volume provider 协调工作，管理 volume 的生命周期。<br>运行 cinder-volume 服务的节点被称作为存储节点</p>
+
+        </div>
+          
+        <div class="top-div">
+          
+        </div>
+          
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/2023/09/03/xfg-gpt-study/">
+          <h3 class="post-title">
+            下一篇：devops学习
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+    <div id="gitalk-container"></div>
+
+
+
+    <link rel="stylesheet" href="/style/gitalk.min.css"/>
+    <script src="/js/gitalk.min.js"></script>
+    <script>
+        const config = {"clientId":"ef1dde43d6cdf1cf1134","clientSecret":"8d6c18ab3ab92bc7ba66395f634fa216bfdd2525","repository":"blog-talk","owner":"Forri1996","createIssueManually":true};
+        const gitalk = new Gitalk({
+            clientID: config.clientId,
+            clientSecret: config.clientSecret,
+            repo: config.repository,
+            owner: config.owner,
+            admin: [config.owner],
+            id: location.pathname.slice(1, location.pathname.lastIndexOf('/')).substring(0, 49),       // Ensure uniqueness and length less than 50
+            distractionFreeMode: false,  // Facebook-like distraction free mode
+            createIssueManually: config.createIssueManually ? true : false
+        });
+
+        gitalk.render('gitalk-container')
+
+    </script>
+
+
+
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a aria-label="跳转至github" href="https://github.com/Forri1996" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+
+
+      </div>
+    </div>
+    
+<script id="hexo-configurations"> window.theme_config = {"image":{"lazyload_enable":true,"photo_zoom":"simple-lightbox"}}; window.is_post = true; </script>
+
+<script src="/js/main.js"></script>
+
+
+
+    <script async src="https://hm.baidu.com/hm.js?89995671f19ec061ef56430c277109c4"></script>
+
+
+
+
+  <script src="/js/simple-lightbox.min.js"></script><script>document.addEventListener('DOMContentLoaded', function() {new SimpleLightbox('.post-detail .simple-lightbox', {fileExt: false,captionsData:'alt'});});</script></body>
+</html>
+

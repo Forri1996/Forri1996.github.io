@@ -9,8 +9,8 @@
 
 <meta charset="utf-8" >
 
-<title>小傅哥gpt课程学习记录</title>
-<meta name="keywords" content="小傅哥gpt课程学习记录, Forri&#39;s Blog">
+<title>devops学习</title>
+<meta name="keywords" content="devops学习, Forri&#39;s Blog">
 <meta name="description" content="环境准备
 docker
 java
@@ -24,7 +24,7 @@ git
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:title" content="小傅哥gpt课程学习记录">
+<meta property="og:title" content="devops学习">
 <meta property="og:description" content="环境准备
 docker
 java
@@ -39,7 +39,7 @@ git
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="stylesheet" href="/style/main.css">
 
-  <meta name="generator" content="Hexo 6.3.0"></head>
+  <link rel="stylesheet" href="/style/simple-lightbox.min.css"><meta name="generator" content="Hexo 6.3.0"></head>
   <body>
     <div id="app" class="main">
 
@@ -94,7 +94,7 @@ git
   <div class="content-container">
     <div class="post-detail">
       
-      <h2 class="post-title">小傅哥gpt课程学习记录</h2>
+      <h2 class="post-title">devops学习</h2>
       <div class="post-info post-detail-info">
         <span><i class="icon icon-calendar-outline"></i> 2023-09-03</span>
         
@@ -145,10 +145,39 @@ git
 <li>在需要用的地方，拉取镜像后启动</li>
 </ol>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull forri/chatgpt-api:1.5</span><br><span class="line">docker run -p 8080:8080 --name chatgpt-api -d forri/chatgpt-api:1.5</span><br></pre></td></tr></table></figure>
+
+<h1 id="配置自动化部署"><a href="#配置自动化部署" class="headerlink" title="配置自动化部署"></a>配置自动化部署</h1><p>为了实现自动化的容器部署，使用github action能力实现：</p>
+<ul>
+<li>提交代码到main分支后，自动触发docker build 打包镜像上传dockerhub</li>
+<li>ssh虚拟机，自动拉取最新镜像并部署</li>
+</ul>
+<p>由于项目中依赖了chatgpt-sdk-java这个包，但是这个包没有上传到maven中央仓库，所以在打包的时候会提示包找不到的错误</p>
+<p>本地可以通过手动install来解决，但是如果要用github action，这个方案就行不通了。</p>
+<p>两个办法：</p>
+<ul>
+<li>将sdk集成到data工程</li>
+<li>上传sdk到中央仓库</li>
+</ul>
+<p>这里使用第一个方案。</p>
+<p>为了验证确实部署了新的代码上容器，新增一个接口用于部署后的验证：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:8091/api/v1/auth/testcicd</span><br></pre></td></tr></table></figure>
+
+<p>准备好代码后，继续下面的操作（代码修改好后记得在本地 mvn package 并且能成功打包，再继续）</p>
+<p>操作步骤</p>
+<ul>
+<li>注册dockerhub并获得accesstoken，并配置到github action的variables中</li>
+<li>获取部署服务器的ssh私钥(注意是私钥)，并配置到github action的variables中</li>
+<li>将服务器公钥添加到keys文件(注意是公钥)<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+在代码根目录添加文件夹：.github&#x2F;workflows&#x2F;maven.yml<br>代码内容：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"># This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time</span><br><span class="line"># For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven</span><br><span class="line"></span><br><span class="line"># This workflow uses actions that are not certified by GitHub.</span><br><span class="line"># They are provided by a third-party and are governed by</span><br><span class="line"># separate terms of service, privacy policy, and support</span><br><span class="line"># documentation.</span><br><span class="line"></span><br><span class="line">name: Java CI with Maven</span><br><span class="line"></span><br><span class="line">on:</span><br><span class="line">  push:</span><br><span class="line">    branches: [ &quot;main&quot; ]</span><br><span class="line"></span><br><span class="line">env:</span><br><span class="line">  REGISTRY: docker.io  # 默认为 docker.io，即去 Docker Hub 上找</span><br><span class="line">  IMAGE_NAME: $&#123;&#123; github.event.repository.name &#125;&#125;  # 使用 GitHub Actions 提供的能力，可以自动获取仓库名</span><br><span class="line">  IMAGE_TAG: latest  # Docker Image 的 tag，为了方便我直接设置 latest</span><br><span class="line">  PORT: 8091  # 服务要暴露的端口，可以改</span><br><span class="line"></span><br><span class="line">jobs:</span><br><span class="line">  build:</span><br><span class="line"></span><br><span class="line">    runs-on: ubuntu-latest</span><br><span class="line"></span><br><span class="line">    steps:</span><br><span class="line">      - uses: actions/checkout@v3</span><br><span class="line">      - name: Set up JDK 8  # 可以改版本</span><br><span class="line">        uses: actions/setup-java@v3</span><br><span class="line">        with:</span><br><span class="line">          java-version: &#x27;8&#x27;  # 可以改版本</span><br><span class="line">          distribution: &#x27;temurin&#x27;</span><br><span class="line">          cache: maven</span><br><span class="line">      - name: Build with Maven</span><br><span class="line">        run: mvn -B package --file pom.xml</span><br><span class="line"></span><br><span class="line">      # Login against a Docker registry except on PR</span><br><span class="line">      # https://github.com/docker/login-action</span><br><span class="line">      - name: Log into registry</span><br><span class="line">        if: github.event_name != &#x27;pull_request&#x27;</span><br><span class="line">        uses: docker/login-action@v2</span><br><span class="line">        with:</span><br><span class="line">          registry: $&#123;&#123; env.REGISTRY &#125;&#125;</span><br><span class="line">          username: $&#123;&#123; secrets.DOCKER_HUB_USER &#125;&#125;</span><br><span class="line">          password: $&#123;&#123; secrets.DOCKER_HUB_TOKEN &#125;&#125;</span><br><span class="line"></span><br><span class="line">      # Build and push Docker image with Buildx (don&#x27;t push on PR)</span><br><span class="line">      # https://github.com/docker/build-push-action</span><br><span class="line">      - name: Build and push Docker image</span><br><span class="line">        uses: docker/build-push-action@v3</span><br><span class="line">        with:</span><br><span class="line">          context: .</span><br><span class="line">          push: $&#123;&#123; github.event_name != &#x27;pull_request&#x27; &#125;&#125;</span><br><span class="line">          tags: $&#123;&#123; secrets.DOCKER_HUB_USER &#125;&#125;/$&#123;&#123; env.IMAGE_NAME &#125;&#125;:$&#123;&#123; env.IMAGE_TAG &#125;&#125;</span><br><span class="line"></span><br><span class="line">      # 连接到远程服务器</span><br><span class="line">      - name: Connect to server</span><br><span class="line">        uses: webfactory/ssh-agent@v0.4.1</span><br><span class="line">        with:</span><br><span class="line">          ssh-private-key: $&#123;&#123; secrets.SSH_PRIVATE_KEY &#125;&#125;</span><br><span class="line"></span><br><span class="line">      # 初始化 knownhosts</span><br><span class="line">      - name: Setup knownhosts</span><br><span class="line">        run: ssh-keyscan $&#123;&#123; secrets.SERVER_HOST &#125;&#125; &gt;&gt; ~/.ssh/known_hosts</span><br><span class="line"></span><br><span class="line">      # 触发服务器部署脚本</span><br><span class="line">      - name: Trigger server deployment script</span><br><span class="line">        run: |</span><br><span class="line">          ssh root@$&#123;&#123; secrets.SERVER_HOST &#125;&#125; &quot;docker stop $&#123;&#123; env.IMAGE_NAME &#125;&#125; || true&quot;</span><br><span class="line">          ssh root@$&#123;&#123; secrets.SERVER_HOST &#125;&#125; &quot;docker rm $&#123;&#123; env.IMAGE_NAME &#125;&#125; || true&quot;</span><br><span class="line">          ssh root@$&#123;&#123; secrets.SERVER_HOST &#125;&#125; &quot;docker pull $&#123;&#123; secrets.DOCKER_HUB_USER &#125;&#125;/$&#123;&#123; env.IMAGE_NAME &#125;&#125;:$&#123;&#123; env.IMAGE_TAG &#125;&#125;&quot;</span><br><span class="line">          ssh root@$&#123;&#123; secrets.SERVER_HOST &#125;&#125; &quot;docker run -p $&#123;&#123; env.PORT &#125;&#125;:$&#123;&#123; env.PORT&#125;&#125; --name $&#123;&#123; env.IMAGE_NAME &#125;&#125; -d $&#123;&#123; secrets.DOCKER_HUB_USER &#125;&#125;/$&#123;&#123; env.IMAGE_NAME &#125;&#125;:$&#123;&#123; env.IMAGE_TAG &#125;&#125;&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>提交代码，等待流水线执行完成后，到Portainer上检查部署情况，成功！<br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://github.com/Forri1996/blog-talk/assets/128824087/ca87ecae-d812-4e17-8697-cb3ffc92840c"><img   src="/images/loading.svg" data-src="https://github.com/Forri1996/blog-talk/assets/128824087/ca87ecae-d812-4e17-8697-cb3ffc92840c"  alt="image" lazyload></a><br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://github.com/Forri1996/blog-talk/assets/128824087/85942aca-9659-432c-a250-4cf0f96a7f57"><img   src="/images/loading.svg" data-src="https://github.com/Forri1996/blog-talk/assets/128824087/85942aca-9659-432c-a250-4cf0f96a7f57"  alt="image" lazyload></a><br><a class="simple-lightbox" target="_blank" rel="noopener" href="https://github.com/Forri1996/blog-talk/assets/128824087/4265198c-3287-4453-947a-8b7fddb9c8a7"><img   src="/images/loading.svg" data-src="https://github.com/Forri1996/blog-talk/assets/128824087/4265198c-3287-4453-947a-8b7fddb9c8a7"  alt="image" lazyload></a></p>
+<p>这样，后续迭代开发只需要在dev分支开发测试完成，然后merge到main分支后提交，即可自动部署到云服务。</p>
+<p>参考文档：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/590967429">通过 GitHub Actions 完成 Spring Boot 项目的 CI&#x2F;CD（基于 Docker）</a></p>
+
         </div>
           
         <div class="top-div">
-          <ol class="top-box"><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="top-box-text">环境准备</span></a></li><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B"><span class="top-box-text">部署流程</span></a></li></ol>
+          <ol class="top-box"><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="top-box-text">环境准备</span></a></li><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B"><span class="top-box-text">部署流程</span></a></li><li class="top-box-item top-box-level-1"><a class="top-box-link" href="#%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="top-box-text">配置自动化部署</span></a></li></ol>
         </div>
           
       </div>
@@ -240,6 +269,6 @@ git
 
 
 
-  </body>
+  <script src="/js/simple-lightbox.min.js"></script><script>document.addEventListener('DOMContentLoaded', function() {new SimpleLightbox('.post-detail .simple-lightbox', {fileExt: false,captionsData:'alt'});});</script></body>
 </html>
 
