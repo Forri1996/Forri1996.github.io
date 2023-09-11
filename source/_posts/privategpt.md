@@ -24,6 +24,7 @@ tags: 私有化大模型
 参考：[如何解决超长文本gpt](https://zis0qwtriqo.feishu.cn/wiki/WB1LwGSNhiu0lok2pqWcRyFXn5A)
 
 3. 大模型微调
+
 https://blog.csdn.net/taoshihan/article/details/129053834
 
 https://zhuanlan.zhihu.com/p/632882735
